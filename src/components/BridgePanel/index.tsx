@@ -1,7 +1,6 @@
+/* eslint-disable no-alert */
 /* eslint-disable tailwindcss/classnames-order */
 import { AxelarAssetTransfer, Environment } from '@axelar-network/axelarjs-sdk';
-import type { Window as KeplrWindow } from '@keplr-wallet/types';
-import type { MetaMaskInpageProvider } from '@metamask/providers';
 import { ethers } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import React, { useContext, useEffect, useState } from 'react';
@@ -14,18 +13,15 @@ const sdk = new AxelarAssetTransfer({
   auth: 'local',
 });
 
-declare global {
-  interface Window extends KeplrWindow {
-    // ⚠️ notice that "Window" is capitalized here
-    ethereum: MetaMaskInpageProvider;
-  }
-}
-
 enum BridgeUIStep {
   'GenerateDepositAddress' = 'GenerateDepositAddress',
   'SendFromMetaMask' = 'SendFromMetaMask',
   'Success' = 'Success',
 }
+
+const shortenAddress = (addr?: string) => {
+  return addr && `${addr.slice(0, 7)}...${addr.slice(addr.length - 3)}`;
+};
 
 const useUSDCContract = () => {
   const [contract, setContract] = useState<ethers.Contract>();
@@ -84,6 +80,10 @@ const BridgePanel = () => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const generateDepositAddress = async () => {
+    if (!destAddr) {
+      alert('Input destination address.');
+    }
+
     if (destAddr) {
       setIsGenerating(true);
       setDepositAddr('');
@@ -101,6 +101,18 @@ const BridgePanel = () => {
 
   const [depositTx, setDepositTx] = useState<any>();
   const handleSend = async () => {
+    if (!depositAddr) {
+      alert('Generate a deposit address.');
+    }
+
+    if (!typedInput) {
+      alert('Input the amount you want to transfer.');
+    }
+
+    if (!USDCContract) {
+      alert('Connect metamask.');
+    }
+
     if (
       USDCContract &&
       depositAddr &&
@@ -654,7 +666,7 @@ const BridgePanel = () => {
                         style={{ height: '21px' }}
                       >
                         <span className="font-semibold text-primary">
-                          {destAddr}
+                          {shortenAddress(destAddr)}
                         </span>
                       </a>
                     </li>
@@ -667,7 +679,7 @@ const BridgePanel = () => {
                         style={{ height: '21px' }}
                       >
                         <span className="font-semibold text-primary">
-                          {depositAddr}
+                          {shortenAddress(depositAddr)}
                         </span>
                       </a>
                     </li>
@@ -680,7 +692,7 @@ const BridgePanel = () => {
                         style={{ height: '21px' }}
                       >
                         <span className="font-semibold text-primary">
-                          {depositTx?.hash}
+                          {shortenAddress(depositTx?.hash)}
                         </span>
                       </a>
                     </li>
@@ -793,7 +805,7 @@ const BridgePanel = () => {
                             </div>
                             <progress className="h-1" value={1} />
                             <div
-                              className={`flex h-6 w-6 items-center justify-center rounded-full bg-primary opacity-50 ${
+                              className={`flex h-6 w-6 items-center justify-center rounded-full bg-primary ${
                                 (step === BridgeUIStep.GenerateDepositAddress ||
                                   step === BridgeUIStep.SendFromMetaMask) &&
                                 'opacity-50'
@@ -977,7 +989,10 @@ const BridgePanel = () => {
 
                           {step === BridgeUIStep.Success && (
                             <div className="flex items-center justify-center my-4">
-                              <div>Please wait...</div>
+                              <div>
+                                Please check your wallet after around 15
+                                minutes.
+                              </div>
                             </div>
                           )}
                         </div>

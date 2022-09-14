@@ -1,6 +1,6 @@
 {
-  "name": "next-js-boilerplate",
-  "version": "2.1.1",
+  "name": "sei-full-stack-coding-challenge",
+  "version": "1.0.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -74,5 +74,5 @@
     "tailwindcss": "^3.1.8",
     "typescript": "^4.8.3"
   },
-  "author": "Ixartz (https://github.com/ixartz)"
+  "author": "octocat512 (https://github.com/octocat512)"
 }
