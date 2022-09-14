@@ -19,6 +19,10 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@axelar-network/axelarjs-sdk": "^0.11.0",
+    "@keplr-wallet/types": "^0.10.24",
+    "@metamask/providers": "^9.1.0",
+    "ethers": "^5.7.0",
     "next": "^12.3.0",
     "next-seo": "^5.5.0",
     "react": "^18.2.0",

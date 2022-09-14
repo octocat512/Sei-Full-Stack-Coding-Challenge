@@ -19,3 +19,70 @@ a:hover {
 .content ul {
   @apply my-6;
 }
+
+.token-logo {
+  position: absolute;
+  inset: 0px;
+  box-sizing: border-box;
+  padding: 0px;
+  border: none;
+  margin: auto;
+  display: block;
+  width: 0px;
+  height: 0px;
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  max-height: 100%;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  flex-wrap: wrap;
+  border-color: transparent;
+  border-color: hsl(var(--n)/var(--tw-border-opacity));
+  text-align: center;
+  border-radius: var(--rounded-btn,.5rem);
+  height: 3rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  line-height: 1em;
+  min-height: 3rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-transform: var(--btn-text-case,uppercase);
+  -webkit-text-decoration-line: none;
+  text-decoration-line: none;
+  border-width: var(--border-btn,1px);
+  -webkit-animation: button-pop var(--animation-btn,.25s) ease-out;
+  animation: button-pop var(--animation-btn,.25s) ease-out;
+  --tw-border-opacity: 1;
+  --tw-bg-opacity: 1;
+}
+
+.btn-primary {
+    border-width: 0;
+    --tw-bg-opacity: 1;
+    background-color: rgb(56 141 201/var(--tw-bg-opacity));
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255/var(--tw-text-opacity));
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
