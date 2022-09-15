@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 import { ethers } from 'ethers';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { BridgeContext } from '@/contexts/BridgeContext';
 
@@ -149,9 +149,13 @@ const conMetaMask = (() => {
   };
 })();
 
+const ethProvider = ethers.getDefaultProvider(3);
+
 const Wrapper = ({ children }: { children: any }) => {
   const [srcAddr, setSrcAddr] = useState<string>();
   const [srcProvider, setSrcProvider] = useState<any | null>(null);
+  const [srcBlockNumber, setSrcBlockNumber] = useState(0);
+
   const [destAddr, setDestAddr] = useState<string>();
   const [destProvider, setDestProvider] = useState<any | null>(null);
 
@@ -167,11 +171,23 @@ const Wrapper = ({ children }: { children: any }) => {
     setDestProvider(signer);
   };
 
+  useEffect(() => {
+    const handleBlockNumber = (t: number) => {
+      setSrcBlockNumber(t);
+    };
+    ethProvider.on('block', handleBlockNumber);
+
+    return () => {
+      ethProvider.off('block', handleBlockNumber);
+    };
+  }, []);
+
   return (
     <BridgeContext.Provider
       value={{
         srcAddr,
         srcProvider,
+        srcBlockNumber,
         destAddr,
         destProvider,
         connectMetamask,

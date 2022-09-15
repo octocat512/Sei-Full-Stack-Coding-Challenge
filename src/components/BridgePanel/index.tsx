@@ -4,6 +4,7 @@ import { AxelarAssetTransfer, Environment } from '@axelar-network/axelarjs-sdk';
 import { ethers } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import React, { useContext, useEffect, useState } from 'react';
+import { useInterval } from 'usehooks-ts';
 
 import ERC20ABI from '@/abis/ERC20.json';
 import { BridgeContext } from '@/contexts/BridgeContext';
@@ -44,7 +45,7 @@ const useUSDCContract = () => {
 };
 
 const BridgePanel = () => {
-  const { srcAddr, destAddr, connectMetamask, connectKeplr } =
+  const { srcAddr, srcBlockNumber, destAddr, connectMetamask, connectKeplr } =
     useContext(BridgeContext);
 
   const USDCContract = useUSDCContract();
@@ -61,7 +62,7 @@ const BridgePanel = () => {
     };
 
     fetch();
-  }, [USDCContract]);
+  }, [USDCContract, srcBlockNumber]);
 
   const [typedInput, setTypedInput] = useState('');
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,23 +131,34 @@ const BridgePanel = () => {
     }
   };
 
+  const [count, setCount] = useState(0);
+  useInterval(() => {
+    setCount(count + 1);
+  }, 2000);
+
   const [balance, setBalance] = useState<string>();
+
+  //  fetch balance every 2 secs
   useEffect(() => {
     const fetchBalance = async () => {
-      const res = await fetch(
-        `https://sei-chain-incentivized.com/sei-chain-app/cosmos/bank/v1beta1/balances/${destAddr}`
-      );
-      const data = await res.json();
-      const b = data.balances?.find(
-        (item: any) =>
-          item.denom ===
-          'ibc/6D45A5CD1AADE4B527E459025AC1A5AEF41AE99091EF3069F3FEAACAFCECCD21'
-      )?.amount;
-      if (b) setBalance(formatUnits(b, 6));
+      if (destAddr) {
+        const res = await fetch(
+          `https://sei-chain-incentivized.com/sei-chain-app/cosmos/bank/v1beta1/balances/${destAddr}`
+        );
+        const data = await res.json();
+        const b = data.balances?.find(
+          (item: any) =>
+            item.denom ===
+            'ibc/6D45A5CD1AADE4B527E459025AC1A5AEF41AE99091EF3069F3FEAACAFCECCD21'
+        )?.amount;
+        if (b) setBalance(formatUnits(b, 6));
+      } else {
+        setBalance(undefined);
+      }
     };
 
     fetchBalance();
-  }, [destAddr]);
+  }, [destAddr, count]);
 
   return (
     <main className="h-screen text-white">
